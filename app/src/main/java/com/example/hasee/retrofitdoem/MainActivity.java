@@ -3,6 +3,9 @@ package com.example.hasee.retrofitdoem;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import retrofit2.Call;
@@ -14,6 +17,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity {
     private Context mcontext = this;
     private TextView textView;
+    private EditText editText;
+    private Button bt;
+    private String s;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,10 +28,20 @@ public class MainActivity extends AppCompatActivity {
         initView();
 //        initRetrofit();
         //request();
-        requestpost();
     }
     private void initView(){
         textView = (TextView)findViewById(R.id.iv_show);
+        editText = (EditText)findViewById(R.id.et);
+        bt = (Button)findViewById(R.id.btn);
+        bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                 s = editText.getText().toString();
+                if (s!=null){
+                    requestpost();
+                }
+            }
+        });
     }
     /**
      * 普通的请求
@@ -97,13 +113,14 @@ public class MainActivity extends AppCompatActivity {
 
         PostRequest_Interface postRequestInterface = retrofit.create(PostRequest_Interface.class);
 
-        Call<Translation1> call = postRequestInterface.getCall("i love you");
+        Call<Translation1> call = postRequestInterface.getCall(s);
 
         call.enqueue(new Callback<Translation1>() {
             @Override
             public void onResponse(Call<Translation1> call, Response<Translation1> response) {
                 String s = response.body().getTranslateResult().get(0).get(0).getTgt();
                 textView.setText(s);
+
             }
 
             @Override
